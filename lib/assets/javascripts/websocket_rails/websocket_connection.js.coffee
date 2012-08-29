@@ -6,7 +6,12 @@ class WebSocketRails.WebSocketConnection
   constructor: (@url,@dispatcher) ->
     @url             = "ws://#{@url}" unless @url.match(/^wss?:\/\//)
     @message_queue   = []
-    @_conn           = new WebSocket(@url)
+
+    if window.MozWebSocket
+      @_conn           = new MozWebSocket(@url)
+    else
+      @_conn           = new WebSocket(@url)
+
     @_conn.onmessage = @on_message
     @_conn.onclose   = @on_close
     @_conn.onerror   = @on_error
